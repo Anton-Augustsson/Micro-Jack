@@ -1,5 +1,3 @@
-let x = 0
-let y = 0
 let generated_index = 0
 let deck: string[] = []
 let game_status = 0
