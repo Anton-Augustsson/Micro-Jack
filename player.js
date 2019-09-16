@@ -4,9 +4,11 @@ let player_id = 0
 let my_turn = 0
 let has_lost = 0
 let has_won = 0
+let has_stood_down = 0
 let cards: string[] = []
 let current_card = 0
 let received_card = -1
+let show_my_turn = 0
 let sum = 0
 let deck = ["2", "2", "2", "2", "3", "3", "3", "3", "4", "4", "4", "4", "5", "5", "5", "5", "6", "6", "6", "6", "7", "7", "7", "7", "8", "8", "8", "8", "9", "9", "9", "9", "10", "10", "10", "10", "A", "A", "A", "A", "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K"]
 radio.setGroup(21)
@@ -39,6 +41,8 @@ input.onButtonPressed(Button.A, function () {
 
 input.onButtonPressed(Button.B, function () {
     if (game_status == 2 && my_turn) {
+        has_stood_down = 1
+        led.setBrightness(255)
         radio.sendValue("sd", 0)
     }
 })
@@ -58,10 +62,24 @@ basic.forever(function () {
             // Du kan förlora innan spelet är klart
             basic.showIcon(IconNames.Skull)
         } else {
-            if (received_card > -1) {
-                basic.showString(deck[received_card])
+            if (show_my_turn) {
+                basic.showIcon(IconNames.Heart)
             } else {
-                loop_through_cards()
+                if (received_card > -1) {
+                    basic.showString(deck[received_card])
+                } else {
+                    if (has_stood_down) {
+                        basic.showLeds(`
+                            . . . . .
+                            . . . . .
+                            . . . . .
+                            . . . . .
+                            # # # # #
+                            `)
+                    } else {
+                        loop_through_cards()
+                    }
+                }
             }
         }
     } else {
@@ -76,6 +94,7 @@ basic.forever(function () {
 
 function on_game_status_changed(state: number) {
     game_status = state
+    led.setBrightness(255)
 
     if (game_status == 0) {
         // Inget spel är igång
@@ -84,14 +103,13 @@ function on_game_status_changed(state: number) {
         sum = 0
         cards = []
         has_lost = 0
+        has_won = 0
+        has_stood_down = 0
         my_turn = 0
-    } else if (game_status == 3) {
-        // Spelet är slut, visa om du vann eller inte
-        if (has_won) {
-            basic.showIcon(IconNames.Happy)
-        } else {
-            basic.showIcon(IconNames.Sad)
-        }
+        current_card = 0
+        cards = []
+        received_card = -1
+        show_my_turn = 0
     }
 }
 
@@ -103,8 +121,11 @@ function on_new_turn(id: number) {
     if (id === player_id) {
         led.setBrightness(255)
         my_turn = 1
+        show_my_turn = 1
+        basic.pause(1000)
+        show_my_turn = 0
     } else {
-        led.setBrightness(120)
+        led.setBrightness(25)
         my_turn = 0
     }
 }
