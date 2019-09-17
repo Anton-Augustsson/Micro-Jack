@@ -9,6 +9,7 @@ let cards: string[] = []
 let current_card = 0
 let received_card = -1
 let show_my_turn = 0
+let lobby_animation_step = 0
 let sum = 0
 let deck = ["2", "2", "2", "2", "3", "3", "3", "3", "4", "4", "4", "4", "5", "5", "5", "5", "6", "6", "6", "6", "7", "7", "7", "7", "8", "8", "8", "8", "9", "9", "9", "9", "10", "10", "10", "10", "A", "A", "A", "A", "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K"]
 radio.setGroup(21)
@@ -55,7 +56,22 @@ basic.forever(function () {
         if (player_id > 0) {
             basic.showNumber(player_id)
         } else {
-            // Visa ikon här?
+            if (lobby_animation_step == 0) {
+                basic.showIcon(IconNames.Square)
+                lobby_animation_step += 1
+            } else if (lobby_animation_step == 1) {
+                basic.showIcon(IconNames.SmallSquare)
+                lobby_animation_step += 1
+            } else {
+                basic.showLeds(`
+                    . . . . .
+                    . . . . .
+                    . . # . .
+                    . . . . .
+                    . . . . .
+                    `)
+                lobby_animation_step = 0
+            }
         }
     } else if (game_status == 2) {
         if (has_lost == 1) {
@@ -164,4 +180,4 @@ function loop_through_cards() {
             current_card += 1
         }
     }
-}
+} 2

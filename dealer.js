@@ -150,12 +150,16 @@ function draw_card() {
     if (players[current_player] > 21) {
         // Spelaren har gått över 21
         remove_current_player_from_game()
-        radio.sendValue("yl", 0)
+        //radio.sendValue("yl", 0)
+        // Vi valde att helt enkelt inte berätta för spelaren att den är ute
+        // utan spelaren får bara inte sin tur och får själva räkna ut att den har åkt ut
         basic.pause(100)
     }
 }
 
 function generate_card() {
+    // Detta behöver ändras då spelaren inte tar hänsyn till att listan krymper.
+    // Om exempelvis kort med index 0 tas bort kommer alla kort förskjutas ett steg för spelaren
     generated_index = Math.randomRange(0, cards_left)
     generated_card = deck.removeAt(generated_index)
     cards_left += -1
@@ -177,4 +181,4 @@ function get_card_value(card: string) {
 function reset_deck() {
     deck = ["2", "2", "2", "2", "3", "3", "3", "3", "4", "4", "4", "4", "5", "5", "5", "5", "6", "6", "6", "6", "7", "7", "7", "7", "8", "8", "8", "8", "9", "9", "9", "9", "10", "10", "10", "10", "A", "A", "A", "A", "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K"]
     cards_left = 51
-} 
+}  
