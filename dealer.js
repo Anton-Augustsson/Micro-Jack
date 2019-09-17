@@ -158,6 +158,8 @@ function draw_card() {
 }
 
 function generate_card() {
+    // Detta behöver ändras då spelaren inte tar hänsyn till att listan krymper.
+    // Om exempelvis kort med index 0 tas bort kommer alla kort förskjutas ett steg för spelaren
     generated_index = Math.randomRange(0, cards_left)
     generated_card = deck.removeAt(generated_index)
     cards_left += -1
